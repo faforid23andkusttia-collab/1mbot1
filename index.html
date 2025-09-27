@@ -24,27 +24,28 @@
     box-shadow: 0 8px 30px rgba(0,0,0,0.4);
     max-width: 700px;
     width: 100%;
-    padding: 30px 40px;
+    padding: 20px 15px; /* মোবাইলের মত padding */
     backdrop-filter: blur(12px);
   }
 
   h2 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     margin-bottom: 15px;
     letter-spacing: 1.2px;
     color: #ffd700;
     text-shadow: 0 0 8px #ffd700aa;
+    text-align: center;
   }
 
   #latestPeriod {
-    font-size: 2.8rem;
+    font-size: 2rem; /* মোবাইল সাইজ */
     font-weight: 700;
     color: #00ff99;
     text-align: center;
-    margin-bottom: 40px;
-    letter-spacing: 3px;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
     text-shadow:
       0 0 5px #00ff99,
       0 0 10px #00ff99,
@@ -55,21 +56,21 @@
   .prediction-box {
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     border-radius: 15px;
-    padding: 25px 30px;
+    padding: 20px;
     box-shadow: 0 0 20px #00ff99aa;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
+    text-align: center;
   }
 
   .prediction-box div {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
-    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
     color: #e0e0e0;
   }
 
   #predictionPeriod {
     font-weight: 700;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: #00e676;
     letter-spacing: 2px;
     text-shadow:
@@ -79,11 +80,11 @@
 
   #predictionSignal {
     font-weight: 800;
-    font-size: 2.5rem;
-    padding: 10px 25px;
+    font-size: 2rem; /* মোবাইলের মত */
+    padding: 8px 18px;
     border-radius: 50px;
     display: inline-block;
-    min-width: 140px;
+    min-width: 110px;
     box-shadow: 0 0 15px #ff4081;
     transition: all 0.3s ease;
   }
@@ -115,8 +116,8 @@
   table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 12px;
-    font-size: 1rem;
+    border-spacing: 0 10px;
+    font-size: 0.9rem; /* ছোট সাইজ */
     color: #ddd;
   }
 
@@ -126,7 +127,7 @@
   }
 
   thead th {
-    padding: 12px 15px;
+    padding: 10px;
     text-align: center;
     font-weight: 700;
     letter-spacing: 1px;
@@ -145,7 +146,7 @@
   }
 
   tbody td {
-    padding: 12px 15px;
+    padding: 10px;
     text-align: center;
     font-weight: 600;
     border-radius: 12px;
@@ -170,24 +171,6 @@
     color: #ffd600;
     text-shadow: 0 0 5px #ffd600aa;
   }
-
-  /* Scroll for smaller screens */
-  @media (max-width: 480px) {
-    .container {
-      padding: 20px 15px;
-    }
-    #latestPeriod {
-      font-size: 2rem;
-    }
-    #predictionSignal {
-      font-size: 2rem;
-      min-width: 110px;
-      padding: 8px 18px;
-    }
-    table {
-      font-size: 0.9rem;
-    }
-  }
 </style>
 </head>
 <body>
@@ -195,22 +178,21 @@
 <div class="container" role="main" aria-label="Prediction and Latest History Panel">
 
   <h2>Latest Period number</h2>
-  <div id="latestPeriod" aria-live="polite" aria-atomic="true" aria-relevant="text">লোড হচ্ছে...</div>
+  <div id="latestPeriod">লোড হচ্ছে...</div>
 
-  <div class="prediction-box" aria-label="Prediction Box">
-    <div>Prediction Period: <span id="predictionPeriod" aria-live="polite" aria-atomic="true">-</span></div>
-    <div>Prediction Signal: <span id="predictionSignal" aria-live="polite" aria-atomic="true" class="">-</span></div>
+  <div class="prediction-box">
+    <div>Prediction Period: <span id="predictionPeriod">-</span></div>
+    <div>Prediction Signal: <span id="predictionSignal" class="">-</span></div>
   </div>
 
   <h2>Last 10 results</h2>
-  <table aria-describedby="resultsDescription" role="table">
-    <caption id="resultsDescription" class="sr-only">Last 10 Period results</caption>
+  <table>
     <thead>
       <tr>
-        <th scope="col">Period Number</th>
-        <th scope="col">Number</th>
-        <th scope="col">Color</th>
-        <th scope="col">Premium</th>
+        <th>Period Number</th>
+        <th>Number</th>
+        <th>Color</th>
+        <th>Premium</th>
       </tr>
     </thead>
     <tbody id="resultsTableBody">
@@ -227,7 +209,6 @@
     return num >= 5 ? 'BIG' : 'SMALL';
   }
 
-  // Update prediction signal style class
   function updateSignalClass(signalEl, signal) {
     signalEl.classList.remove('BIG', 'SMALL', 'NEUTRAL');
     if (signal === 'BIG') signalEl.classList.add('BIG');
@@ -246,17 +227,14 @@
         throw new Error('No data received');
       }
 
-      // Latest Period Number
       const latestPeriodNumber = list[0].issueNumber;
       document.getElementById('latestPeriod').textContent = latestPeriodNumber;
 
-      // Prediction Period Number (+1)
       const prefix = latestPeriodNumber.slice(0, -5);
       const lastFive = latestPeriodNumber.slice(-5);
       const incremented = (parseInt(lastFive, 10) + 1).toString().padStart(5, '0');
       document.getElementById('predictionPeriod').textContent = prefix + incremented;
 
-      // --- Prediction Logic (last 100 results) ---
       const last100 = list.slice(0, 100);
       let bigCount = 0;
       let smallCount = 0;
@@ -275,7 +253,6 @@
       predictionSignalEl.textContent = predictionSignal;
       updateSignalClass(predictionSignalEl, predictionSignal);
 
-      // --- Last 10 results table update ---
       const last10 = list.slice(0, 10);
       const tbody = document.getElementById('resultsTableBody');
       tbody.innerHTML = '';
@@ -302,11 +279,11 @@
       document.getElementById('predictionPeriod').textContent = '-';
       document.getElementById('predictionSignal').textContent = '-';
       updateSignalClass(document.getElementById('predictionSignal'), '');
-      document.getElementById('resultsTableBody').innerHTML = `<tr><td colspan="4" style="color:#ff6b6b; text-align:center;">ডেটা লোড করতে সমস্যা হয়েছে</td></tr>`;
+      document.getElementById('resultsTableBody').innerHTML =
+        `<tr><td colspan="4" style="color:#ff6b6b; text-align:center;">ডেটা লোড করতে সমস্যা হয়েছে</td></tr>`;
     }
   }
 
-  // Initial fetch and intervals
   fetchAndUpdate();
   setInterval(fetchAndUpdate, 1000);
 </script>
